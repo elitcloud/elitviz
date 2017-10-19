@@ -25,7 +25,7 @@ class EntrySection extends Component {
       focused: false,
 
       //Flags for axios
-      input: "RAW",
+      inputFormat: "RAW",
       model: "TWITTER",
 
       tokenization: 1,
@@ -44,9 +44,9 @@ class EntrySection extends Component {
     let third;
     let fourth;
 
-    if(state.input === "RAW"){
+    if (state.inputFormat === "RAW"){
       first = 0;
-    } else if (state.input === "LIVE") {
+    } else if (state.inputFormat === "LINE") {
       first = 1;
     }
 
@@ -73,6 +73,22 @@ class EntrySection extends Component {
     return flag;
   }
 
+  getInputFormat = (state) => {
+    if (state.inputFormat === "RAW") {
+      return "raw";
+    } else if (state.inputFormat === "LINE") {
+      return "line";
+    }
+  }
+
+  getSentimentModel = (state) => {
+    if (state.model === "TWITTER") {
+      return 'twit-att';
+    } else if (state.model === "MOVIE") {
+      return 'mov-att';
+    }
+  }
+
   componentDidMount() {
       document.addEventListener('mousedown', this.handleClickOutside);
   }
@@ -90,8 +106,11 @@ class EntrySection extends Component {
     if(this.props.currentText !== "") {
 
       let dataToAnalyze = {
-        "input": this.props.currentText,
-        "flag": this.mapStateToFlag(this.state)
+        "text": this.props.currentText,
+        "input_format": this.getInputFormat(this.state),
+        "tokenize": this.state.tokenization,
+        "segment": this.state.segmentation,
+        "sentiment": this.getSentimentModel(this.state)
       };
 
       this.props.actions.analyzeText(dataToAnalyze);
@@ -103,10 +122,10 @@ class EntrySection extends Component {
   }
 
   //same logic for sentiment model
-  toggleInput = (type) => {
+  toggleInputFormat = (type) => {
 
     this.setState({
-      input: type
+      inputFormat: type
     });
 
   }
@@ -143,9 +162,6 @@ class EntrySection extends Component {
     });
   }
 
-
-
-
   handleEntryFocus = () => {
     //only if the text area is focused…add local state
     this.props.actions.handleEntryFocus(true)
@@ -177,8 +193,8 @@ class EntrySection extends Component {
 
     let currentState;
 
-    if(category === "input") {
-      currentState = this.state.input;
+    if (category === "inputFormat") {
+      currentState = this.state.inputFormat;
     } else {
       currentState = this.state.model;
     }
@@ -268,8 +284,8 @@ class EntrySection extends Component {
               <div className = "input-format-section">
                 <div style = {flagTitleStyle} className = "flag-title">Input format</div>
                 <div style = {{display: "flex", flexDirection: "row"}}>
-                  <button onClick = {()=>this.toggleInput("RAW")} className = {this.renderFlagClass("input", "RAW")}>Raw</button>
-                  <button onClick = {()=>this.toggleInput("LIVE")} className = {this.renderFlagClass("input", "LIVE")}>Live</button>
+                  <button onClick = {()=>this.toggleInputFormat("RAW")} className = {this.renderFlagClass("inputFormat", "RAW")}>Raw</button>
+                  <button onClick={() => this.toggleInputFormat("LINE")} className={this.renderFlagClass("inputFormat", "LINE")}>LINE</button>
                 </div>
               </div>
 
