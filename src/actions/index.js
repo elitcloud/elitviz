@@ -1,7 +1,7 @@
 import * as types from './ActionTypes'
 import rp from 'request-promise'
 
-const API_URL = "https://elit.cloud/demo/";
+const API_URL = "https://elit.cloud/public/demo/";
 
 /****TEXT ENTRY FUNCTIONS****/
 export function editText(data){
