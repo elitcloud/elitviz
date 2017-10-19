@@ -1,7 +1,7 @@
 import * as types from './ActionTypes'
 import rp from 'request-promise'
 
-const API_URL = "http://127.0.0.1:8000/public/decode/";
+const API_URL = "https://elit.cloud/public/decode/";
 
 /****TEXT ENTRY FUNCTIONS****/
 export function editText(data){
