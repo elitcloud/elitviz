@@ -12,131 +12,140 @@ import { connect } from 'react-redux';
 class Visualization extends Component {
 
 
-  mapPosToWeights = (pos, sentence) => {
-    switch(pos){
-      case 0:
-        return sentence.sentiment_attention[0];
-      case 1:
-        return sentence.sentiment_attention[1];
-        break;
-      case 2:
-        return sentence.sentiment_attention[2];
-        break;
-      case 3:
-        return sentence.sentiment_attention[3];
-        break;
-      case 4:
-        return sentence.sentiment_attention[4];
-        break;
-      case 5:
-        return sentence.sentiment_attention[5];
-        break;
-      default:
-        return sentence.sentiment_attention[0];
+  mapPosToWeights = (pos, sentence, request) => {
+
+    let attention;
+
+    if(request.sentiment === "mov-att") {
+
+      attention = sentence["sentiment-mov-att"];
+
+    } else if (request.sentiment === "twit-att") {
+
+      attention = sentence["sentiment-twit-att"];
     }
+
+    return attention[pos];
+  }
+
+  filterNGrams = (filters, maxSent, negScore, neutScore, posScore) => {
+
+    let filterValue = true;
+
+    if(maxSent  === negScore) {
+      filters.negative ? filterValue = true : filterValue = false;
+
+    } else if (maxSent === neutScore) {
+      filters.neutral ? filterValue = true : filterValue = false;
+
+    } else {
+      filters.positive ? filterValue = true : filterValue = false;
+    }
+
+    //Default
+    if(!filters.positive && !filters.neutral && !filters.negative) {
+      filterValue = true;
+    }
+
+    return filterValue;
   }
 
   renderNgrams = (documents, selectedDocument) => {
 
-    console.log("FROM RENDER NGRAM: ", documents);
-
-    if(!this.props.analyzedSuccess) {
-      return;
-    }
-
     let currentDocument = documents[selectedDocument];
 
-    if (currentDocument !== undefined && !this.props.entryIsFocused) {
-
-      let Ngrams = [];
-      let visibleSentences = this.props.visibleSentences;
-
-      let start;
-      let end;
-
-      if(visibleSentences.length > 0 && currentDocument.length > 1) {
-        start = visibleSentences[0];
-        end = visibleSentences[1] + 1;
-      } else {
-        start = 0;
-        end = currentDocument.length;
-      }
-
-      for(let sentenceIndex = start; sentenceIndex < end; sentenceIndex++) {
-
-        let sentence = currentDocument[sentenceIndex];
-
-        if(sentence === undefined) {
-          return [];
-        }
-
-        let weights = this.mapPosToWeights(this.props.ngramPos, sentence);
-        let isVisible;
-        let filters = this.props.sentimentFilters;
-
-        //Predominant sentiment in the sentence for filtering purposes.
-        let maxSent = 0;
-
-        if(sentence.sentiment !== undefined) {
-
-          for(var i = 0; i < sentence.sentiment.length; i++) {
-            if (sentence.sentiment[i] > maxSent) {
-              maxSent = sentence.sentiment[i];
-            }
-          }
-
-          let negScore = sentence.sentiment[0];
-          let neutScore = sentence.sentiment[1];
-          let posScore = sentence.sentiment[2];
-
-          let POSITIVE_PRESSED = filters.positive;
-          let NEGATIVE_PRESSED = filters.negative;
-          let NEUTRAL_PRESSED = filters.neutral;
-
-          for(let tokenIndex = 0; tokenIndex < weights.length; tokenIndex++) {
-
-            if(maxSent  === negScore) {
-              if(NEGATIVE_PRESSED) {
-                isVisible = true;
-              } else {
-                isVisible = false;
-              }
-            } else if (maxSent === neutScore) {
-              if(NEUTRAL_PRESSED) {
-                isVisible = true;
-              } else {
-                isVisible = false;
-              }
-            } else {
-              if(POSITIVE_PRESSED) {
-                isVisible = true;
-              } else {
-                isVisible = false;
-              }
-            }
-
-            //Default
-            if(!POSITIVE_PRESSED && !NEUTRAL_PRESSED && !NEGATIVE_PRESSED) {
-              isVisible = true;
-            }
-
-            Ngrams.push(
-              <Ngram
-                token = {sentence.tokens[tokenIndex]}
-                key = {sentence.tokens[tokenIndex] + sentenceIndex + tokenIndex}
-
-                sentenceSentiment = {sentence.sentiment}
-                weight = {weights[tokenIndex]}
-
-                visualFocus = {this.props.visualFocus}
-                visible = {isVisible}
-                />
-            );
-          }
-        }
-      }
-      return Ngrams;
+    //Guards
+    if(!this.props.analyzedSuccess) {
+      return [];
     }
+
+    if(currentDocument == undefined || this.props.entryIsFocused) {
+      return [];
+    }
+
+    let Ngrams = [];
+    let visibleSentences = this.props.visibleSentences;
+
+    //Sentence start/end
+    let start;
+    let end;
+
+    //Calculating the start/end of the visible sentences
+    if(visibleSentences.length > 0 && currentDocument.length > 1) {
+      start = visibleSentences[0];
+      end = visibleSentences[1] + 1;
+    } else {
+      start = 0;
+      end = currentDocument.length;
+    }
+
+    //Create the ngrams in a loop based on the start/end indices.
+    for(let sentenceIndex = start; sentenceIndex < end; sentenceIndex++) {
+
+      let sentence = currentDocument[sentenceIndex];
+      let sentiment;
+
+      //GUARDS
+      if(sentence === undefined) {
+        return [];
+      }
+
+      if (sentence["sentiment-twit"] !== undefined ||
+          sentence["sentiment-mov"] !== undefined) {
+
+            console.log("PROPS: ", this.props);
+
+            if(this.props.request.sentiment === "mov-att") {
+              sentiment = sentence["sentiment-mov"];
+            } else if (this.props.request.sentiment === "twit-att") {
+              sentiment = sentence["sentiment-twit"];
+            }
+
+      } else {
+        return [];
+      }
+
+      let weights = this.mapPosToWeights(this.props.ngramPos, sentence, this.props.request);
+
+      console.log("WEIGHTS!!!!: ", weights);
+
+      let isVisible;
+      let filters = this.props.sentimentFilters;
+
+      //Predominant sentiment in the sentence for filtering purposes.
+      let maxSent = 0;
+
+        for(var i = 0; i < sentiment.length; i++) {
+          if (sentiment[i] > maxSent) {
+            maxSent = sentiment[i];
+          }
+        }
+
+        let negScore = sentiment[0];
+        let neutScore = sentiment[1];
+        let posScore = sentiment[2];
+
+        for(let tokenIndex = 0; tokenIndex < weights.length; tokenIndex++) {
+
+          isVisible = this.filterNGrams(filters, maxSent, negScore, neutScore, posScore);
+          console.log("visible: ", isVisible);
+
+          Ngrams.push(
+            <Ngram
+              token = {sentence.tokens[tokenIndex]}
+              key = {sentence.tokens[tokenIndex] + sentenceIndex + tokenIndex}
+
+              sentenceSentiment = {sentiment}
+              weight = {weights[tokenIndex]}
+
+              visualFocus = {this.props.visualFocus}
+              visible = {isVisible}
+              />
+          );
+        }
+    }
+
+    return Ngrams;
   }
 
   render () {
@@ -232,6 +241,7 @@ function mapStateToProps(state){
     entryIsFocused: state.EntrySection.entryIsFocused,
 
     documents: state.EntrySection.documents,
+    request: state.EntrySection.request,
     selectedDocument: state.ControlPanel.selectedDocument,
     visibleSentences: state.ControlPanel.visibleSentences,
     analyzedSuccess: state.EntrySection.analyzedSuccess

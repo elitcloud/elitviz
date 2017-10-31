@@ -31,7 +31,7 @@ export function analyzeText(data){
       .then(function (b) {
 
         let docs = b.body;
-        dispatch(analyzeTextSuccess(docs))
+        dispatch(analyzeTextSuccess(docs, data))
 
       })
       .catch(function (error) {
@@ -44,10 +44,11 @@ export function analyzeText(data){
 }
 
 // CALLED ONCE THE API RETURNS SUCCESSFULLY
-export function analyzeTextSuccess(data) {
+export function analyzeTextSuccess(data, request) {
   return {
     type: types.ANALYZE_TEXT_SUCCESS,
-    payload: data
+    payload: data,
+    request: request
   }
 }
 

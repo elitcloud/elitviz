@@ -6,6 +6,7 @@ const initialState = {
   entryIsFocused: false,
   analyzedSuccess: true,
   documents: [],
+  request: {},
 };
 
 function calculateNewDocumentData(phrase) {
@@ -62,6 +63,7 @@ function createWeights(input){
   for(var i = 0; i < input.length; i++ ) {
     weights[i] = Math.random() * (max - min) + min;
   }
+
   return weights;
 }
 
@@ -69,23 +71,20 @@ export default function EntrySection(state = initialState, action) {
   switch(action.type){
 
     case ANALYZE_TEXT_SUCCESS:
-
-      let dummy = calculateNewDocumentData(state.currentText);
-      console.log("PAYLOAD: ", action.payload);
-      console.log("test data; ", dummy);
-      console.log("length", JSON.parse(action.payload).length);
-
+      // let dummy = calculateNewDocumentData(state.currentText);
+      // console.log("PAYLOAD: ", action.payload);
+      // console.log("length", JSON.parse(action.payload).length);
       let newData = JSON.parse(action.payload);
 
       return { ...state,
         documents: newData,
-        // documents: dummy,
+        request: action.request,
         analyzedText: state.currentText,
         analyzedSuccess: true,
     }
 
     case ANALYZE_TEXT_FAILURE:
-    console.log("FAILURE!!!");
+
       return { ...state,
         analyzedSuccess: false
       }

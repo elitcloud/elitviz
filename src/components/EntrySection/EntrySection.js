@@ -28,49 +28,13 @@ class EntrySection extends Component {
       inputFormat: "RAW",
       model: "TWITTER",
 
-      tokenization: 1,
-      segmentation: 1
+      tokenization: true,
+      segmentation: true
     }
 
     this.setWrapperRef = this.setWrapperRef.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
 
-  }
-
-  mapStateToFlag = (state) => {
-    let flag;
-    let first;
-    let second;
-    let third;
-    let fourth;
-
-    if (state.inputFormat === "RAW"){
-      first = 0;
-    } else if (state.inputFormat === "LINE") {
-      first = 1;
-    }
-
-    if(state.tokenization === 0) {
-      second = 0;
-    } else if (state.tokenization === 1) {
-      second = 1;
-    }
-
-    if(state.segmentation === 0) {
-      third = 0;
-    } else if (state.segmentation === 1) {
-      third = 1;
-    }
-
-    if (state.model === "TWITTER") {
-      fourth = 3;
-    } else if(state.model === "MOVIE") {
-      fourth = 4;
-    }
-
-    flag = "" + first + second + third + fourth;
-
-    return flag;
   }
 
   getInputFormat = (state) => {
@@ -123,7 +87,6 @@ class EntrySection extends Component {
 
   //same logic for sentiment model
   toggleInputFormat = (type) => {
-
     this.setState({
       inputFormat: type
     });
@@ -131,7 +94,6 @@ class EntrySection extends Component {
   }
 
   toggleModel = (type) => {
-
     this.setState({
       model: type
     });
@@ -139,9 +101,10 @@ class EntrySection extends Component {
   }
 
   toggleTokenization = () => {
+
     let newFlag;
 
-    this.state.tokenization === 0 ? newFlag = 1: newFlag = 0;
+    this.state.tokenization === false ? newFlag = true: newFlag = false;
 
     this.setState({
       tokenization: newFlag
@@ -151,9 +114,10 @@ class EntrySection extends Component {
   }
 
   toggleSegmentation = () => {
+
     let newFlag;
 
-    this.state.segmentation === 0 ? newFlag = 1: newFlag = 0;
+    this.state.segmentation === false ? newFlag = true: newFlag = false;
 
     this.setState({
       segmentation: newFlag
@@ -302,12 +266,12 @@ class EntrySection extends Component {
             <div className = "input-options-bottom">
               <div className = "tokenization-section">
                 <div style = {flagTitleStyle} className = "flag-title">Tokenization</div>
-                <input className = "flag-checkbox" checked = {this.state.tokenization === 1 ? true : false} onChange = {this.toggleTokenization} type = "checkbox"></input>
+                <input className = "flag-checkbox" checked = {this.state.tokenization ? true : false} onChange = {this.toggleTokenization} type = "checkbox"></input>
               </div>
 
               <div className = "segmentation-section">
                 <div style = {flagTitleStyle} className = "flag-title">Segmentation</div>
-                  <input className = "flag-checkbox" checked = {this.state.segmentation === 1 ? true : false} onChange = {this.toggleSegmentation} type = "checkbox"></input>
+                  <input className = "flag-checkbox" checked = {this.state.segmentation ? true : false} onChange = {this.toggleSegmentation} type = "checkbox"></input>
               </div>
             </div>
 

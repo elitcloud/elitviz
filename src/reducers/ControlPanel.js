@@ -24,7 +24,7 @@ const initialState = {
     negative: false
   },
   visualFocus: {
-    opacity: false,
+    opacity: true,
     scale: false
   },
   jsonOn: false,

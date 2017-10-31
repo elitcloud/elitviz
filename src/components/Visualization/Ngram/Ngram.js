@@ -14,11 +14,14 @@ class Ngram extends Component {
   }
 
   renderColor = (weight) => {
-    return {
+    let color = {
       r: weight[0]*255,
       g: weight[1]*255,
       b: weight[2]*255
     };
+
+    console.log("getting color: ", color);
+    return color;
   }
 
   handle_mouse_enter = (e) => {
@@ -54,6 +57,8 @@ class Ngram extends Component {
       opacity = 0.1;
     }
 
+    console.log("NGRAM PROPS: ", this.props);
+    
     let color = this.renderColor(this.props.sentenceSentiment);
     // console.log(baseColor);
     let scaleFactor = this.props.weight;
