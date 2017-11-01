@@ -93,7 +93,7 @@ class Visualization extends Component {
       if (sentence["sentiment-twit"] !== undefined ||
           sentence["sentiment-mov"] !== undefined) {
 
-            console.log("PROPS: ", this.props);
+            // console.log("PROPS: ", this.props);
 
             if(this.props.request.sentiment === "mov-att") {
               sentiment = sentence["sentiment-mov"];
@@ -107,7 +107,7 @@ class Visualization extends Component {
 
       let weights = this.mapPosToWeights(this.props.ngramPos, sentence, this.props.request);
 
-      console.log("WEIGHTS!!!!: ", weights);
+      // console.log("WEIGHTS!!!!: ", weights);
 
       let isVisible;
       let filters = this.props.sentimentFilters;
