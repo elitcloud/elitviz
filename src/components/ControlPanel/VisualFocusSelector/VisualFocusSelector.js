@@ -13,6 +13,8 @@ class VisualFocusSelector extends React.Component {
             style = {this.props.style} >
         <div className = "control-panel-title">Visual Focus</div>
         <div className = "visual-focus-btns">
+          <button onClick = {() => this.selectVisualFocus("WORDS")}
+            className = {this.props.visualFocus.words ? "control-panel-btn opacity-active" : "control-panel-btn"}>Words</button>
           <button onClick = {() => this.selectVisualFocus("OPACITY")}
             className = {this.props.visualFocus.opacity ? "control-panel-btn opacity-active" : "control-panel-btn"}>Opacity</button>
           <button onClick = {() => this.selectVisualFocus("SCALE")}

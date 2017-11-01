@@ -13,9 +13,9 @@ export function editText(data){
 
 export function analyzeText(data){
   //THIS IS A THUNK
-  console.log("ANALYZING TEXT: ", data);
 
   return (dispatch) => {
+
 
     var options = {
       method: 'POST',
@@ -27,10 +27,13 @@ export function analyzeText(data){
       resolveWithFullResponse: true
     };
 
+    dispatch(analyzeInProgress());
+
     return rp(options)
       .then(function (b) {
 
         let docs = b.body;
+
         dispatch(analyzeTextSuccess(docs, data))
 
       })
@@ -40,11 +43,18 @@ export function analyzeText(data){
         dispatch(analyzeTextFailure());
       });
     }
+}
 
+export function analyzeInProgress() {
+  return {
+    type: types.ANALYZE_IN_PROGRESS
+  }
 }
 
 // CALLED ONCE THE API RETURNS SUCCESSFULLY
 export function analyzeTextSuccess(data, request) {
+  console.log("success!");
+
   return {
     type: types.ANALYZE_TEXT_SUCCESS,
     payload: data,

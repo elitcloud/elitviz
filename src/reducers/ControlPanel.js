@@ -19,12 +19,13 @@ import { NEGATIVE,
 const initialState = {
   currentNgramPosition: 0,
   sentimentFilters: {
-    positive: false,
-    neutral: false,
-    negative: false
+    positive: true,
+    neutral: true,
+    negative: true
   },
   visualFocus: {
-    opacity: true,
+    words: true,
+    opacity: false,
     scale: false
   },
   jsonOn: false,
@@ -37,13 +38,21 @@ function selectVisualFocus(state, focus) {
 
   if(focus === "OPACITY") {
     visualFocus = {
+      words: state.visualFocus.words,
       opacity: !state.visualFocus.opacity,
       scale: state.visualFocus.scale
     }
-  } else {
+  } else if (focus === "SCALE"){
     visualFocus = {
+      words: state.visualFocus.words,
       opacity: state.visualFocus.opacity,
       scale: !state.visualFocus.scale
+    }
+  } else {
+    visualFocus = {
+      words: !state.visualFocus.words,
+      opacity: state.visualFocus.opacity,
+      scale: state.visualFocus.scale
     }
   }
   return visualFocus;

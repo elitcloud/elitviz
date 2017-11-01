@@ -172,6 +172,23 @@ class ControlPanel extends Component {
       )
     }
 
+    if(this.props.analyzeInProgress) {
+      controlPanel = (
+        <div className = "control-panel-content">
+          <div style = {
+            {display: "flex",
+            alignItems: "center",
+            flexDirection: "column",
+            justifyContent: "center",
+            color: "lightgrey"}}>
+
+            <h1>Sending your text to the NLP gods...</h1>
+
+          </div>
+        </div>
+      )
+    }
+
     return(
       <div className = "control-panel-container"
         style = {controlPanelContainerStyle}
@@ -203,6 +220,7 @@ function mapStateToProps(state){
     currentText: state.EntrySection.currentText,
     analyzedText: state.EntrySection.analyzedText,
     analyzedSuccess: state.EntrySection.analyzedSuccess,
+    analyzeInProgress: state.EntrySection.analyzeInProgress,
     phraseData: state.EntrySection.phrase,
     documents: state.EntrySection.documents
   };

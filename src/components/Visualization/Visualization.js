@@ -11,17 +11,11 @@ import { connect } from 'react-redux';
 
 class Visualization extends Component {
 
-
   mapPosToWeights = (pos, sentence, request) => {
-
     let attention;
-
     if(request.sentiment === "mov-att") {
-
       attention = sentence["sentiment-mov-att"];
-
     } else if (request.sentiment === "twit-att") {
-
       attention = sentence["sentiment-twit-att"];
     }
 
@@ -40,11 +34,6 @@ class Visualization extends Component {
 
     } else {
       filters.positive ? filterValue = true : filterValue = false;
-    }
-
-    //Default
-    if(!filters.positive && !filters.neutral && !filters.negative) {
-      filterValue = true;
     }
 
     return filterValue;
@@ -78,6 +67,8 @@ class Visualization extends Component {
       start = 0;
       end = currentDocument.length;
     }
+
+    let sentenceCount = end-start;
 
     //Create the ngrams in a loop based on the start/end indices.
     for(let sentenceIndex = start; sentenceIndex < end; sentenceIndex++) {
@@ -125,16 +116,16 @@ class Visualization extends Component {
         let neutScore = sentiment[1];
         let posScore = sentiment[2];
 
+
         for(let tokenIndex = 0; tokenIndex < weights.length; tokenIndex++) {
 
           isVisible = this.filterNGrams(filters, maxSent, negScore, neutScore, posScore);
-          console.log("visible: ", isVisible);
 
           Ngrams.push(
             <Ngram
               token = {sentence.tokens[tokenIndex]}
               key = {sentence.tokens[tokenIndex] + sentenceIndex + tokenIndex}
-
+              sentenceCount = { sentenceCount > 1 ? sentenceCount : 2}
               sentenceSentiment = {sentiment}
               weight = {weights[tokenIndex]}
 
@@ -213,7 +204,7 @@ class Visualization extends Component {
     return(
       <div
         className = "visualization-container"
-        style = {this.props.visualFocus.scale ? {minHeight: sentenceCount * maxNodeHeight * 4} : {}}>
+        style = { this.props.visualFocus.scale ? {minHeight: sentenceCount/2 * maxNodeHeight } : {} }>
 
         <div className = "ngrams-container" style = {entryFocusStyle}>
           { this.renderNgrams(this.props.documents, this.props.selectedDocument) }

@@ -1,10 +1,11 @@
-import { ANALYZE_TEXT_SUCCESS, ANALYZE_TEXT_FAILURE, EDIT_TEXT, HANDLE_ENTRY_FOCUS } from './../actions/ActionTypes'
+import { ANALYZE_TEXT_SUCCESS, ANALYZE_TEXT_FAILURE, ANALYZE_IN_PROGRESS, EDIT_TEXT, HANDLE_ENTRY_FOCUS } from './../actions/ActionTypes'
 
 const initialState = {
   analyzedText: "",
   currentText: "",
   entryIsFocused: false,
   analyzedSuccess: true,
+  analyzeInProgress: false,
   documents: [],
   request: {},
 };
@@ -71,9 +72,8 @@ export default function EntrySection(state = initialState, action) {
   switch(action.type){
 
     case ANALYZE_TEXT_SUCCESS:
-      // let dummy = calculateNewDocumentData(state.currentText);
-      // console.log("PAYLOAD: ", action.payload);
-      // console.log("length", JSON.parse(action.payload).length);
+
+      console.log("PAYLOAD: ", action.payload);
       let newData = JSON.parse(action.payload);
 
       return { ...state,
@@ -81,12 +81,19 @@ export default function EntrySection(state = initialState, action) {
         request: action.request,
         analyzedText: state.currentText,
         analyzedSuccess: true,
+        analyzeInProgress: false
     }
 
     case ANALYZE_TEXT_FAILURE:
 
       return { ...state,
-        analyzedSuccess: false
+        analyzedSuccess: false,
+        analyzeInProgress: false
+      }
+
+    case ANALYZE_IN_PROGRESS:
+      return { ...state,
+        analyzeInProgress: true
       }
 
     case EDIT_TEXT:
