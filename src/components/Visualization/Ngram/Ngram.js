@@ -51,7 +51,7 @@ class Ngram extends Component {
     if(this.props.sentenceCount < 75) {
       logSentenceScale = Math.log10(this.props.sentenceCount)*1.1;
     } else {
-      logSentenceScale = Math.log10(75)*1.1
+      logSentenceScale = Math.log10(75)*1.1;
     }
 
     let heightRatio = 75 * ( 1 /  logSentenceScale );
@@ -103,6 +103,7 @@ class Ngram extends Component {
               color: "white",
               backgroundColor: "transparent",
               transition: "0.2s ease-in",
+              opacity: opacity
             };
 
         }
@@ -113,12 +114,15 @@ class Ngram extends Component {
           console.log("WORDS, OPACITY: ", this.props.visualFocus);
 
           contentStyle = {
+              transition: "0.2s",
               backgroundColor: "white",
               color: baseColor + this.props.weight + "1)",
               margin: "2.5px",
               fontSize: "1.2em",
-              transition: "0.2s"
+              transition: "0.2s",
+              opacity: opacity
             };
+
         }
     }
 
@@ -152,6 +156,7 @@ class Ngram extends Component {
           color: "white",
           backgroundColor: "transparent",
           transition: "0.2s ease-in",
+          opacity: opacity
         };
 
       }

@@ -11,11 +11,10 @@ export function editText(data){
   }
 }
 
+//Called when analyzing any piece of text.
 export function analyzeText(data){
-  //THIS IS A THUNK
 
   return (dispatch) => {
-
 
     var options = {
       method: 'POST',
@@ -27,6 +26,7 @@ export function analyzeText(data){
       resolveWithFullResponse: true
     };
 
+    //In progress
     dispatch(analyzeInProgress());
 
     return rp(options)
@@ -34,6 +34,7 @@ export function analyzeText(data){
 
         let docs = b.body;
 
+        //Send the request body to analyze success
         dispatch(analyzeTextSuccess(docs, data))
 
       })
